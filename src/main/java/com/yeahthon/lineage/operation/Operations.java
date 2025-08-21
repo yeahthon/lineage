@@ -46,8 +46,9 @@ public class Operations {
                 .toArray(Operation[]::new);
     }
 
+    // 获取单个SQL语句的Operation类型（枚举类中的类型）
     public static SqlTypeEnum getOperationType(String sql) {
-        // 将SQL转为大写并调整为一行
+        // 将SQL转为大写并调整为一行，并将所有的空格、换行（包含tab等）均替换为单个空格
         String sqlTrim = sql.replaceAll(SQL_EMPTY_STR, " ").trim().toUpperCase();
 
         return Arrays.stream(SqlTypeEnum.values())

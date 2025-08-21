@@ -51,9 +51,12 @@ public enum SqlTypeEnum {
     private String type;
     private Pattern pattern;
 
-    SqlTypeEnum(String type, String regrex) {
+    SqlTypeEnum(String type, String regex) {
         this.type = type;
-        this.pattern = Pattern.compile(regrex, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+        // 将给定的正则表达式字符串编译为一个Pattern对象
+        // Pattern.CASE_INSENSITIVE:不区分大小写
+        // Pattern.DOTALL:使.元字符匹配任何字符，包括行终止符（如换行符 \n），这样就可以匹配到多行的一条SQL语句
+        this.pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
     }
 
     public void setType(String type) {
