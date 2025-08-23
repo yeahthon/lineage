@@ -1,0 +1,136 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+    <!-- jdbc 连接的 URL -->
+    <property>
+        <name>javax.jdo.option.ConnectionURL</name>
+        <value>jdbc:mysql://hadoop102:3306/metastore?useSSL=false&amp;useUnicode=true&amp;characterEncoding=UTF-8&amp;allowPublicKeyRetrieval=true</value>
+    </property>
+
+    <!-- jdbc 连接的 Driver-->
+    <property>
+        <name>javax.jdo.option.ConnectionDriverName</name>
+        <value>com.mysql.cj.jdbc.Driver</value>
+    </property>
+
+    <!-- jdbc 连接的 username-->
+    <property>
+        <name>javax.jdo.option.ConnectionUserName</name>
+        <value>root</value>
+    </property>
+
+    <!-- jdbc 连接的 password -->
+    <property>
+        <name>javax.jdo.option.ConnectionPassword</name>
+        <value>000000</value>
+    </property>
+
+    <property>
+        <name>hive.metastore.schema.verification</name>
+        <value>false</value>
+    </property>
+
+    <!-- Hive 默认在 HDFS 的工作目录 -->
+    <property>
+        <name>hive.metastore.warehouse.dir</name>
+        <value>/user/hive/warehouse</value>
+    </property>
+
+    <!-- 指定 hiveserver2 连接的端口号 -->
+    <property>
+        <name>hive.server2.thrift.port</name>
+        <value>10000</value>
+    </property>
+
+    <!-- 指定 hiveserver2 连接的 host -->
+    <property>
+        <name>hive.server2.thrift.bind.host</name>
+        <value>hadoop102</value>
+    </property>
+
+    <!-- 指定存储元数据要连接的地址 -->
+    <property>
+        <name>hive.metastore.uris</name>
+        <value>thrift://hadoop102:9083</value>
+    </property>
+
+    <!-- 元数据存储授权 -->
+    <property>
+        <name>hive.metastore.event.db.notification.api.auth</name>
+        <value>false</value>
+    </property>
+
+    <!-- Hive 元数据存储版本的验证 -->
+    <property>
+        <name>hive.metastore.schema.verification</name>
+        <value>false</value>
+    </property>
+
+    <!-- hiveserver2 的高可用参数，开启此参数可以提高 hiveserver2 的启动速度 -->
+    <property>
+        <name>hive.server2.active.passive.ha.enable</name>
+        <value>true</value>
+    </property>
+
+    <!--Spark 依赖位置-->
+    <property>
+        <name>spark.yarn.jars</name>
+        <value>hdfs://hadoop102:9820/spark-jars/*</value>
+    </property>
+
+    <!--Hive 执行引擎-->
+    <property>
+        <name>hive.execution.engine</name>
+        <value>mapreduce</value>
+    </property>
+
+    <!--Hive 和 spark 连接超时时间-->
+    <property>
+        <name>hive.spark.client.connect.timeout</name>
+        <value>10000</value>
+    </property>
+
+    <property>
+        <name>hive.spark.client.server.connect.timeout</name>
+        <value>90000</value>
+    </property>
+
+    <property>
+        <name>metastore.storage.schema.reader.impl</name>
+        <value>org.apache.hadoop.hive.metastore.SerDeStorageSchemaReader</value>
+    </property>
+
+    <property>
+        <!-- 开启并发，当涉及到事务、锁机制时开启 -->
+        <name>hive.support.concurrency</name>
+        <value>true</value>
+    </property>
+    
+    <property>
+        <name>hive.enforce.bucketing</name>
+        <value>true</value>
+    </property>
+    
+    <property>
+        <name>hive.exec.dynamic.partition.mode</name>
+        <value>nonstrict</value>
+    </property>
+    
+    <property>
+        <!-- 设置 Hive 的事务管理器，该管理器支持 ACID -->
+        <name>hive.txn.manager</name>
+        <value>org.apache.hadoop.hive.ql.lockmgr.DbTxnManager</value>
+    </property>
+    
+    <property>
+        <!-- 开启压缩，当开启支持 ACID 的事务表时非常重要 -->
+        <name>hive.compactor.initiator.on</name>
+        <value>true</value>
+    </property>
+    
+    <property>
+        <!-- 执行压缩任务的线程数 -->
+        <name>hive.compactor.worker.threads</name>
+        <value>2</value>
+    </property>
+</configuration>
