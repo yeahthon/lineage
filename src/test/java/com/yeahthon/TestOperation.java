@@ -1,8 +1,5 @@
 package com.yeahthon;
 
-import com.yeahthon.lineage.enums.SqlTypeEnum;
-import com.yeahthon.lineage.operation.Operations;
-import org.apache.calcite.schema.StreamableTable;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.functions.RichMapFunction;
@@ -16,16 +13,13 @@ import org.apache.flink.table.api.bridge.java.internal.StreamTableEnvironmentImp
 import org.apache.flink.table.delegation.Parser;
 import org.apache.flink.table.operations.Operation;
 import org.apache.flink.util.Collector;
-import org.reflections.Reflections;
-import org.reflections.scanners.Scanners;
 
 import java.io.Serializable;
 import java.util.*;
 
-/**
- * Unit test for simple App.
- */
-public class AppTest implements Serializable {
+// TODO 所有Operation的名称
+// TODO 本地连接集群Flink操作表
+public class TestOperation implements Serializable {
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
         StreamExecutionEnvironment env = StreamExecutionEnvironment.createLocalEnvironmentWithWebUI(conf);

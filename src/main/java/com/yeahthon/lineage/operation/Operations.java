@@ -19,18 +19,23 @@ public class Operations {
     private static final Operation[] ALL_OPERATIONS = getAllOperations();
 
     private static Operation[] getAllOperations() {
-        Reflections reflections = new Reflections(Operations.class.getPackage().getName());
+        // 使用 Reflections 获取所有 Operations 的子类或者实现类
+        Reflections reflections = new Reflections(Operation.class.getPackage().getName());
+        // Scanners.SubTypes.of(Operations.class).asClass() 表示查找所有 Operations 的子类型
         Set<Class<?>> operations = reflections.get(Scanners.SubTypes.of(Operations.class).asClass());
 
         return operations.stream()
+                // 过滤掉接口类型，只保留具体类
                 .filter(clz -> !clz.isInterface())
                 .map(clz -> {
                     try {
+                        // 将每个 Class 对象映射为其实例
                         return clz.getConstructor().newInstance();
                     } catch (InstantiationException
                              | IllegalAccessException
                              | InvocationTargetException
                              | NoSuchMethodException e) {
+                        // 异常处理包括：无法实例化（如抽象类）、无法访问构造方法、构造方法抛出异常、没有无参构造方法等
                         log.error("getAllOperations error, class: {}, err: {}", clz.getName(), e.getMessage());
 
                         throw new RuntimeException(e);

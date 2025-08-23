@@ -40,6 +40,7 @@ public class LineageApp {
 
         String[] sqls = SQLUtil.getStatements(statement);
         for (String sql : sqls) {
+            // 获取单个SQL的操作类型
             SqlTypeEnum operationType = Operations.getOperationType(sql);
             if (operationType == SqlTypeEnum.INSERT) {
                 lineageRelList.addAll(parseSqlLineage(sql));
@@ -58,6 +59,7 @@ public class LineageApp {
     }
 
     // 提取操作类型Operation和关系表达式树RelNode
+    // Tuple2<目标端catalog.database.table,RelNode>
     public Tuple2<String, RelNode> getOperation(String sql) {
         List<Operation> operations = tableEnv.getParser().parse(sql);
         if (operations.size() != 1) {
@@ -65,7 +67,9 @@ public class LineageApp {
         } else if (operations.get(0) instanceof SinkModifyOperation) {
             Operation operation = operations.get(0);
             SinkModifyOperation sinkOperation = (SinkModifyOperation) operation;
+            // 获取查询操作
             PlannerQueryOperation queryOperation = (PlannerQueryOperation) sinkOperation.getChild();
+            // 获取Calcite关系表达式树
             RelNode relNode = queryOperation.getCalciteTree();
             return new Tuple2<>(sinkOperation.getContextResolvedTable().getIdentifier().asSummaryString(), relNode);
         } else {
@@ -86,17 +90,25 @@ public class LineageApp {
                     queryFieldList,
                     targetColumnList));
         } else {
+            // 获取元数据查询对象，该接口提供了来查询关系代数表达式RelNode的各种元数据属性
             RelMetadataQuery metadataQuery = relNode.getCluster().getMetadataQuery();
             ArrayList<LineageColumnRel> resultList = new ArrayList<>();
             for (int index = 0; index < targetColumnList.size(); index++) {
                 String targetColumn = targetColumnList.get(index);
+                // metadataQuery.getColumnOrigins可以确定查询结果中每一列的来源
+                // 例如metadataQuery.getColumnOrigins(relNode,0):返回目标表第0列(id)的来源信息
+                // 针对此SQL，RelColumnOrigin对象指向源表test.student_back表的第0列(id)
                 Set<RelColumnOrigin> relColumnOriginSet = metadataQuery.getColumnOrigins(relNode, index);
+                // 遍历每个来源列
                 for (RelColumnOrigin relColumnOrigin : relColumnOriginSet) {
+                    // 构建来源全表名
                     RelOptTable table = relColumnOrigin.getOriginTable();
                     String sourceTable = String.join(".", table.getQualifiedName());
+                    // 获取来源列在源表中的序号
                     int ordinal = relColumnOrigin.getOriginColumnOrdinal();
                     TableSourceTable tableSourceTable = (TableSourceTable) table;
                     List<String> fieldNames = tableSourceTable.contextResolvedTable().getResolvedSchema().getColumnNames();
+                    // 根据列的序号获取列明
                     String sourceColumn = fieldNames.get(ordinal);
                     resultList.add(LineageConvert.buildLineageColumnRel(sourceTable, sourceColumn, targetTable, targetColumn));
                 }
